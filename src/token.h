@@ -47,4 +47,6 @@ struct Token {
 	std::string value;
 };
 
+std::string to_string(Token::Type);
+
 #endif

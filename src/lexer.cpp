@@ -3,6 +3,7 @@
 #include <vector>
 #include <utility> // pair
 #include <regex>
+#include <iostream>
 
 Lexer::Lexer(std::string input) :
 	input(input),
@@ -24,6 +25,14 @@ Token Lexer::pop() {
 	} else {
 		return this->next_token();
 	}
+}
+
+void Lexer::debug() {
+	Token t;
+	do {
+		t = this->pop();
+		std::cout << to_string(t.type) << " " << t.value << std::endl;
+	} while (t.type != Token::Type::ENDINPUT);
 }
 
 Token Lexer::next_token() {
@@ -55,7 +64,7 @@ static const std::vector<std::pair<Token::Type, std::regex> > token_patterns = {
 	// literals
 	{Token::Type::ID,        std::regex("[_a-zA-Z]+[_a-zA-Z0-9]*")},
 	{Token::Type::NUM,       std::regex("[0-9]*\\.?[0-9]+")},
-	{Token::Type::STRING,    std::regex("/\"(?:[^\"\\\\]|\\\\.)*\"/")},
+	{Token::Type::STRING,    std::regex("\"(?:[^\"\\\\]|\\\\.)*\"")},
 	// brackets
 	{Token::Type::LPAR,      std::regex("\\(")},
 	{Token::Type::RPAR,      std::regex("\\)")},
@@ -85,11 +94,11 @@ static const std::vector<std::pair<Token::Type, std::regex> > token_patterns = {
 	{Token::Type::SEMICOLON, std::regex(";")},
 	{Token::Type::COMMA,     std::regex(",")},
 	{Token::Type::DOT,       std::regex("\\.")},
-	{Token::Type::PIPE,      std::regex("|")},
+	{Token::Type::PIPE,      std::regex("\\|")},
 	{Token::Type::ASSIGN,    std::regex(":=")},
 	// whitespace
 	{Token::Type::NL,        std::regex("\\n+")},
-	{Token::Type::WS,        std::regex("[\\s]*")},
+	{Token::Type::WS,        std::regex(" +")},
 };
 
 Token::Type Lexer::match_token(std::string token) {

@@ -21,6 +21,8 @@ public:
 	Token peak();
 	Token pop();
 
+	void debug();
+
 private:
 	Token next_token();
 	Token::Type match_token(std::string token);
