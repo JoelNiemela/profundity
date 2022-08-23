@@ -1,5 +1,7 @@
 let name = "Testing"
 
+let set = {x*2 | Integer}
+
 let main: (a: int) -> int =
 	a
 
