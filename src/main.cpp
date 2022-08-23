@@ -1,1 +1,5 @@
-int main() {}
+#include "lexer.h"
+
+int main() {
+	Lexer("1");
+}

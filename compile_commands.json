@@ -11,11 +11,30 @@
       "-std=c++20",
       "-c",
       "-o",
-      "obj/linux/main.o",
-      "src/main.cpp"
+      "obj/linux/lexer.o",
+      "src/lexer.cpp"
     ],
     "directory": "/home/mocqoro/Programming/Projects/profundity",
-    "file": "/home/mocqoro/Programming/Projects/profundity/src/main.cpp",
-    "output": "/home/mocqoro/Programming/Projects/profundity/obj/linux/main.o"
+    "file": "/home/mocqoro/Programming/Projects/profundity/src/lexer.cpp",
+    "output": "/home/mocqoro/Programming/Projects/profundity/obj/linux/lexer.o"
+  },
+  {
+    "arguments": [
+      "/sbin/g++",
+      "-DGLEW_STATIC",
+      "-I",
+      "src",
+      "-I",
+      "../include",
+      "-Wall",
+      "-std=c++20",
+      "-c",
+      "-o",
+      "obj/linux/token.o",
+      "src/token.cpp"
+    ],
+    "directory": "/home/mocqoro/Programming/Projects/profundity",
+    "file": "/home/mocqoro/Programming/Projects/profundity/src/token.cpp",
+    "output": "/home/mocqoro/Programming/Projects/profundity/obj/linux/token.o"
   }
 ]
