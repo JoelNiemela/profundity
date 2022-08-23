@@ -1,0 +1,29 @@
+let name = "Testing"
+
+let main: (a: int) -> int =
+	a
+
+let for: []T -> (T -> T) -> []T = builtin
+
+let map: (arr: []T) -> (fn: T -> T) -> []T =
+	for arr::indexed (e, i) ->
+		arr[i] := fn arr[i]
+		println e
+
+let arr: []int = [1, 2, 3]
+
+map arr (e) -> (e * 2)
+
+for arr e ->
+	println e
+
+let num: ?int = if arr[1] = 1 42
+let num: ?int = 42 if arr[1] = 1
+
+let num: int = if arr[1] = 1 42 else 3
+let num: int = 42 if arr[1] = 1 else 3
+
+let User = (
+	name: String,
+	age: i32,
+)
