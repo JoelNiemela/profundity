@@ -1,3 +1,4 @@
-.cache/*
-obj/*
-bin/*
+.cache/
+obj/
+bin/
+compile_commands.json
