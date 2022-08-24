@@ -1,13 +1,16 @@
 #include "lexer.h"
 #include "parser.h"
 
+#include <fstream>
+#include <string>
+
 int main() {
 	//Lexer lexer("let test_1 42\"Tesing \\\"strings\\\"\"()[]{}*/+-=<>< ><=>=->?^&:;.,|:=\n ");
-	Lexer lexer(
-		"let x = 42\n"
-		"let y = 2\n"
-		"let x: (x: int) -> int = 1\n"
-	);
+	
+	std::ifstream file("./test.prfn");
+	std::string source((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+
+	Lexer lexer(source);
 
 	lexer.debug();
 	lexer.reset();
