@@ -76,4 +76,12 @@ struct OpExp : Exp {
 	void print(std::ostream& out, int indent=0) const;
 };
 
+struct BlockExp : Exp {
+	std::vector<Stm*> stms;
+
+	BlockExp(std::vector<Stm*> stms) : stms(stms) {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
 #endif

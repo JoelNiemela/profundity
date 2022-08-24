@@ -61,3 +61,11 @@ void OpExp::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "}\n";
 }
 
+void BlockExp::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "BlockExp {\n";
+	for (const Stm* stm : this->stms) {
+		if (stm) stm->print(out, indent+1);
+		else indented(out, indent+1) << "NULL\n";
+	}
+	indented(out, indent) << "}\n";
+}

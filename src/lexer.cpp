@@ -6,10 +6,14 @@
 #include <utility> // pair
 #include <regex>
 #include <iostream>
+#include <numeric>
 
 Lexer::Lexer(std::string input) :
 	input(input),
-	pos(0) {}
+	pos(0),
+	line_indent(0),
+	indent_diff(0),
+	at_start_of_line(true) {}
 
 Token Lexer::peak() {
 	if (!this->lookahead) {
@@ -30,8 +34,22 @@ Token Lexer::pop() {
 }
 
 bool Lexer::assert_token(Token found, Token::Type expected) {
-	if (found.type != expected) {
-		std::cerr << "Error: expected " << to_string(expected) << " found " << to_string(found.type) << std::endl;
+	return assert_token(found, std::set{expected});
+}
+
+bool Lexer::assert_token(Token found, std::set<Token::Type> expected) {
+	if (expected.empty()) {
+		std::cerr << "Error: found token " << to_string(found.type) << " in unreachable.";
+		return false;
+	}
+
+	if (!expected.contains(found.type)) {
+		std::string expected_str = std::accumulate(next(expected.begin()), expected.end(), to_string(*expected.begin()),
+			[](std::string str, Token::Type token) {
+				return str + ", " + to_string(token);
+			}
+		);
+		std::cerr << "Error: expected " << expected_str << ", found " << to_string(found.type) << std::endl;
 		return false;
 	}
 
@@ -41,6 +59,9 @@ bool Lexer::assert_token(Token found, Token::Type expected) {
 void Lexer::reset() {
 	this->pos = 0;
 	this->lookahead = std::nullopt;
+	this->line_indent = 0;
+	this->indent_diff = 0;
+	this->at_start_of_line = true;
 }
 
 void Lexer::debug() {
@@ -88,6 +109,19 @@ bool Lexer::is_id_char_head(char c) {
 }
 
 Token Lexer::next_token() {
+	// indentation
+	if (at_start_of_line) {
+		if (indent_diff > 0) {
+			indent_diff--;
+			return Token{Token::TAB, "\t"};
+		} else if (indent_diff < 0) {
+			indent_diff++;
+			return Token{Token::END, ""};
+		}
+
+		at_start_of_line = false;
+	}
+
 	char c = pop_char();
 	
 	// literals
@@ -164,8 +198,13 @@ Token Lexer::next_token() {
 	if (c == '|') return Token{Token::PIPE, "|"};
 	// whitespace
 	if (c == '\n') {
-		int count = 1;
+		unsigned int count = 1;
 		while (peak_char() == '\n') pop_char(), count++;
+		unsigned int indent = 0;
+		while (peak_char() == '\t') pop_char(), indent++;
+		indent_diff = indent - line_indent;
+		line_indent = indent;
+		at_start_of_line = true;
 		return Token{Token::NL, std::string(count, '\n')};
 	}
 	if (c == ' ') {
@@ -174,7 +213,7 @@ Token Lexer::next_token() {
 	}
 	if (c == '\0') return Token{Token::ENDINPUT, "\0"};
 
-	return Token{Token::ERROR, ""};
+	return Token{Token::ERROR, std::string(1, c)};
 }
 
 static const std::vector<std::pair<Token::Type, std::regex> > token_patterns = {

@@ -25,6 +25,7 @@ Stm* Parser::parse_stm() {
 	switch (token.type) {
 		case Token::Type::LET:
 			return parse_let_stm();
+		case Token::Type::END:
 		case Token::Type::ENDINPUT:
 			return nullptr;
 		default:
@@ -49,7 +50,7 @@ LetStm* Parser::parse_let_stm() {
 
 	Exp* exp = parse_exp(14);
 
-	lexer.assert_token(lexer.pop(), Token::Type::NL);
+	lexer.assert_token(lexer.pop(), {Token::NL, Token::END});
 
 	return new LetStm(id.value, type_exp, exp);
 }
@@ -91,11 +92,11 @@ Exp* Parser::parse_exp_atom() {
 	Token token = lexer.pop();
 
 	switch (token.type) {
-		case Token::Type::NUM:
+		case Token::NUM:
 			return new NumExp(token.value);
-		case Token::Type::ID: {
+		case Token::ID: {
 			std::string id = token.value;
-			if (lexer.peak().type == Token::Type::COLON) {
+			if (lexer.peak().type == Token::COLON) {
 				lexer.pop();
 				Exp* type_exp = parse_exp();
 				return new RecordExp(id, type_exp);
@@ -103,15 +104,26 @@ Exp* Parser::parse_exp_atom() {
 				return new VarExp(id);
 			}
 		}
-		case Token::Type::LPAR: {
-			if (lexer.peak().type == Token::Type::RPAR) {
+		case Token::LPAR: {
+			if (lexer.peak().type == Token::RPAR) {
 				lexer.pop();
 				return new UnitExp();
 			} else {
 				Exp* exp = parse_exp();
-				lexer.assert_token(lexer.pop(), Token::Type::RPAR);
+				lexer.assert_token(lexer.pop(), Token::RPAR);
 				return exp;
 			}
+		}
+		case Token::NL: {
+			lexer.assert_token(lexer.pop(), Token::TAB);
+			Stm* stm;
+			std::vector<Stm*> stms;
+			do {
+				stm = parse_stm();
+				if (stm) stms.push_back(stm);
+			} while (stm);
+			lexer.assert_token(lexer.peak(), Token::END);
+			return new BlockExp(stms);
 		}
 		default:
 			std::cerr << "Syntax Error (Exp)" << std::endl;
