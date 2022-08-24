@@ -42,6 +42,14 @@ struct NumExp : Exp {
 	void print(std::ostream& out, int indent=0) const;
 };
 
+struct VarExp : Exp {
+	std::string id;
+
+	VarExp(std::string id) : id(id) {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
 struct OpExp : Exp {
 	Exp* lexp;
 	Exp* rexp;

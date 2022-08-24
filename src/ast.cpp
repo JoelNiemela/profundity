@@ -31,13 +31,19 @@ void NumExp::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "}\n";
 }
 
+void VarExp::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "VarExp {\n";
+	indented(out, indent+1) << this->id << "\n";
+	indented(out, indent) << "}\n";
+}
+
 void OpExp::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "OpExp {\n";
 	if (this->lexp) this->lexp->print(out, indent+1);
 	else indented(out, indent+1) << "NULL\n";
 	if (this->rexp) this->rexp->print(out, indent+1);
 	else indented(out, indent+1) << "NULL\n";
-	indented(out, indent+1) << this->op.type << "\n";
+	indented(out, indent+1) << to_string(this->op.type) << "\n";
 	indented(out, indent) << "}\n";
 }
 

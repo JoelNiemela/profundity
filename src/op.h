@@ -29,4 +29,6 @@ struct Op {
 	Op(Op::Type type);
 };
 
+std::string to_string(Op::Type type);
+
 #endif

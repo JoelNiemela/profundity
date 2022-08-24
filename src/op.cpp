@@ -36,13 +36,26 @@ Op::Assoc Op::assoc(int prec) {
 
 int Op::prec() {
 	switch (this->type) {
-		case Op::Type::MUL: return 10;
-		case Op::Type::DIV: return 10;
-		case Op::Type::ADD: return 10;
-		case Op::Type::SUB: return 10;
+		case Op::Type::MUL:   return 10;
+		case Op::Type::DIV:   return 10;
+		case Op::Type::ADD:   return 10;
+		case Op::Type::SUB:   return 10;
 		case Op::Type::ARROW: return 10;
 		default:
 			std::cerr << "Error: Unknown operator in ast.cpp:Op::prec" << std::endl;
 			return -1;
+	}
+}
+
+std::string to_string(Op::Type type) {
+	switch (type) {
+		case Op::Type::MUL:   return "MUL";
+		case Op::Type::DIV:   return "DIV";
+		case Op::Type::ADD:   return "ADD";
+		case Op::Type::SUB:   return "SUB";
+		case Op::Type::ARROW: return "ARROW";
+		default:
+			std::cerr << "Error: Unknown operator in op.cpp:to_string" << std::endl;
+			return "UNKNOWN";
 	}
 }

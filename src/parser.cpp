@@ -87,6 +87,8 @@ Exp* Parser::parse_exp_atom() {
 	switch (token.type) {
 		case Token::Type::NUM:
 			return new NumExp(token.value);
+		case Token::Type::ID:
+			return new VarExp(token.value);
 		default:
 			std::cerr << "Syntax Error (Exp)" << std::endl;
 			return nullptr;
