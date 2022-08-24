@@ -10,6 +10,7 @@ std::optional<Op> Op::from_token(Token token) {
 		case Token::Type::DIV: return Op(Op::DIV);
 		case Token::Type::ADD: return Op(Op::ADD);
 		case Token::Type::SUB: return Op(Op::SUB);
+		case Token::Type::ARROW: return Op(Op::ARROW);
 		default: return std::nullopt;
 	}
 }
@@ -26,8 +27,8 @@ Op::Assoc Op::assoc(int prec) {
 		case 7:
 		case 8:
 		case 9:
-		case 10:
 			return Op::Assoc::LEFT;
+		case 10:
 			return Op::Assoc::RIGHT;
 		default:
 			return Op::Assoc::INVALID;
