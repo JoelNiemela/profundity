@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "token.h"
 
 #include <vector>
 #include <utility> // pair
@@ -25,6 +26,15 @@ Token Lexer::pop() {
 	} else {
 		return this->next_token();
 	}
+}
+
+bool Lexer::assert_token(Token found, Token::Type expected) {
+	if (found.type != expected) {
+		std::cerr << "Error: expected " << to_string(expected) << " found " << to_string(found.type) << std::endl;
+		return false;
+	}
+
+	return true;
 }
 
 void Lexer::debug() {
@@ -55,7 +65,12 @@ Token Lexer::next_token() {
 
 	str.pop_back();
 
-	return Token{match_token(str), str};
+	Token::Type type = match_token(str);
+	if (type == Token::Type::WS) {
+		return this->next_token();
+	} else {
+		return Token{type, str};
+	}
 }
 
 static const std::vector<std::pair<Token::Type, std::regex> > token_patterns = {

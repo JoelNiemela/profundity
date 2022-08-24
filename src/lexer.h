@@ -21,6 +21,8 @@ public:
 	Token peak();
 	Token pop();
 
+	bool assert_token(Token found, Token::Type expected);
+
 	void debug();
 
 private:
