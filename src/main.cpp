@@ -13,8 +13,8 @@ int main() {
 	Lexer lexer(source);
 
 	lexer.debug();
-	lexer.reset();
+	//lexer.reset();
 
-	Parser parser(lexer);
-	parser.parse()->print(std::cout);
+	//Parser parser(lexer);
+	//parser.parse()->print(std::cout);
 }

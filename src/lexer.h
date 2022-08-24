@@ -32,6 +32,9 @@ private:
 
 	char peak_char();
 	char pop_char();
+
+	static bool is_id_char(char c);
+	static bool is_id_char_head(char c);
 };
 
 #endif
