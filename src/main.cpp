@@ -6,7 +6,7 @@ int main() {
 	Lexer lexer(
 		"let x = 42\n"
 		"let y = 2\n"
-		"let x = 1 -> 2 -> 3\n"
+		"let x: (x: int) -> int = 1\n"
 	);
 
 	lexer.debug();

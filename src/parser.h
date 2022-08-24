@@ -15,7 +15,7 @@ private:
 	Program* parse_program();
 	Stm* parse_stm();
 	LetStm* parse_let_stm();
-	Exp* parse_exp(int prec=10);
+	Exp* parse_exp(int prec=15);
 	Exp* parse_exp_atom();
 };
 

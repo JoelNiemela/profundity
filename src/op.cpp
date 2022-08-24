@@ -6,11 +6,20 @@ Op::Op(Op::Type type) : type(type) {}
 
 std::optional<Op> Op::from_token(Token token) {
 	switch (token.type) {
-		case Token::Type::MUL: return Op(Op::MUL);
-		case Token::Type::DIV: return Op(Op::DIV);
-		case Token::Type::ADD: return Op(Op::ADD);
-		case Token::Type::SUB: return Op(Op::SUB);
+		case Token::Type::MUL:   return Op(Op::MUL);
+		case Token::Type::DIV:   return Op(Op::DIV);
+		case Token::Type::ADD:   return Op(Op::ADD);
+		case Token::Type::SUB:   return Op(Op::SUB);
+		case Token::Type::EQ:    return Op(Op::EQ);
+		case Token::Type::NE:    return Op(Op::NE);
+		case Token::Type::LT:    return Op(Op::LT);
+		case Token::Type::GT:    return Op(Op::GT);
+		case Token::Type::LE:    return Op(Op::LE);
+		case Token::Type::GE:    return Op(Op::GE);
 		case Token::Type::ARROW: return Op(Op::ARROW);
+		case Token::Type::OPT:   return Op(Op::OPT);
+		case Token::Type::PTR:   return Op(Op::PTR);
+		case Token::Type::REF:   return Op(Op::REF);
 		default: return std::nullopt;
 	}
 }
@@ -18,7 +27,6 @@ std::optional<Op> Op::from_token(Token token) {
 Op::Assoc Op::assoc(int prec) {
 	switch (prec) {
 		case 0:
-		case 1:
 		case 2:
 		case 3:
 		case 4:
@@ -27,7 +35,13 @@ Op::Assoc Op::assoc(int prec) {
 		case 7:
 		case 8:
 		case 9:
+		case 11:
+		case 12:
+		case 13:
+		case 14:
+		case 15:
 			return Op::Assoc::LEFT;
+		case 1:
 		case 10:
 			return Op::Assoc::RIGHT;
 		default:
@@ -41,7 +55,16 @@ int Op::prec() {
 		case Op::Type::DIV:   return 5;
 		case Op::Type::ADD:   return 6;
 		case Op::Type::SUB:   return 6;
+		case Op::Type::EQ:    return 15;
+		case Op::Type::NE:    return 15;
+		case Op::Type::LT:    return 14;
+		case Op::Type::GT:    return 14;
+		case Op::Type::LE:    return 14;
+		case Op::Type::GE:    return 14;
 		case Op::Type::ARROW: return 10;
+		case Op::Type::OPT:   return 1;
+		case Op::Type::PTR:   return 1;
+		case Op::Type::REF:   return 1;
 		default:
 			std::cerr << "Error: Unknown operator in ast.cpp:Op::prec" << std::endl;
 			return -1;
@@ -54,7 +77,16 @@ std::string to_string(Op::Type type) {
 		case Op::Type::DIV:   return "DIV";
 		case Op::Type::ADD:   return "ADD";
 		case Op::Type::SUB:   return "SUB";
+		case Op::Type::EQ:    return "EQ";
+		case Op::Type::NE:    return "NE";
+		case Op::Type::LT:    return "LT";
+		case Op::Type::GT:    return "GT";
+		case Op::Type::LE:    return "LE";
+		case Op::Type::GE:    return "GE";
 		case Op::Type::ARROW: return "ARROW";
+		case Op::Type::OPT:   return "OPT";
+		case Op::Type::PTR:   return "PTR";
+		case Op::Type::REF:   return "REF";
 		default:
 			std::cerr << "Error: Unknown operator in op.cpp:to_string" << std::endl;
 			return "UNKNOWN";

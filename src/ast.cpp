@@ -20,6 +20,8 @@ void Program::print(std::ostream& out, int indent) const {
 void LetStm::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "LetStm {\n";
 	indented(out, indent+1) << this->id << "\n";
+	if (this->type_exp) this->type_exp->print(out, indent+1);
+	else indented(out, indent+1) << "NULL\n";
 	if (this->exp) this->exp->print(out, indent+1);
 	else indented(out, indent+1) << "NULL\n";
 	indented(out, indent) << "}\n";
@@ -34,6 +36,14 @@ void NumExp::print(std::ostream& out, int indent) const {
 void VarExp::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "VarExp {\n";
 	indented(out, indent+1) << this->id << "\n";
+	indented(out, indent) << "}\n";
+}
+
+void RecordExp::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "RecordExp {\n";
+	indented(out, indent+1) << this->id << "\n";
+	if (this->type_exp) this->type_exp->print(out, indent+1);
+	else indented(out, indent+1) << "NULL\n";
 	indented(out, indent) << "}\n";
 }
 

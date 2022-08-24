@@ -11,7 +11,16 @@ struct Op {
 		DIV,
 		ADD,
 		SUB,
+		EQ,
+		NE,
+		LT,
+		GT,
+		LE,
+		GE,
 		ARROW,
+		OPT,
+		PTR,
+		REF,
 	} type;
 
 	enum Assoc {

@@ -27,9 +27,10 @@ struct Program : Node {
 
 struct LetStm : Stm {
 	std::string id;
+	Exp* type_exp;
 	Exp* exp;
 
-	LetStm(std::string id, Exp* exp) : id(id), exp(exp) {}
+	LetStm(std::string id, Exp* type_exp, Exp* exp) : id(id), type_exp(type_exp), exp(exp) {}
 
 	void print(std::ostream& out, int indent=0) const;
 };
@@ -46,6 +47,15 @@ struct VarExp : Exp {
 	std::string id;
 
 	VarExp(std::string id) : id(id) {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
+struct RecordExp : Exp {
+	std::string id;
+	Exp* type_exp;
+
+	RecordExp(std::string id, Exp* type_exp) : id(id), type_exp(type_exp) {}
 
 	void print(std::ostream& out, int indent=0) const;
 };

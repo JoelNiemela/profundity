@@ -39,13 +39,19 @@ LetStm* Parser::parse_let_stm() {
 	Token id = lexer.pop();
 	lexer.assert_token(id, Token::Type::ID);
 
+	Exp* type_exp = nullptr;
+	if (lexer.peak().type == Token::Type::COLON) {
+		lexer.pop();
+		type_exp = parse_exp(14);
+	}
+
 	lexer.assert_token(lexer.pop(), Token::Type::EQ);
 
-	Exp* exp = parse_exp();
+	Exp* exp = parse_exp(14);
 
 	lexer.assert_token(lexer.pop(), Token::Type::NL);
 
-	return new LetStm(id.value, exp);
+	return new LetStm(id.value, type_exp, exp);
 }
 
 Exp* Parser::parse_exp(int prec) {
@@ -76,7 +82,7 @@ Exp* Parser::parse_exp(int prec) {
 
 		return lexp;
 	} else {
-		std::cerr << "Syntax Error (Exp)" << std::endl;
+		std::cerr << "Syntax Error (Exp): Invalid operator" << std::endl;
 		return nullptr;
 	}
 }
@@ -87,8 +93,21 @@ Exp* Parser::parse_exp_atom() {
 	switch (token.type) {
 		case Token::Type::NUM:
 			return new NumExp(token.value);
-		case Token::Type::ID:
-			return new VarExp(token.value);
+		case Token::Type::ID: {
+			std::string id = token.value;
+			if (lexer.peak().type == Token::Type::COLON) {
+				lexer.pop();
+				Exp* type_exp = parse_exp();
+				return new RecordExp(id, type_exp);
+			} else {
+				return new VarExp(id);
+			}
+		}
+		case Token::Type::LPAR: {
+			Exp* exp = parse_exp();
+			lexer.assert_token(lexer.pop(), Token::Type::RPAR);
+			return exp;
+		}
 		default:
 			std::cerr << "Syntax Error (Exp)" << std::endl;
 			return nullptr;
