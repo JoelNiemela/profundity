@@ -4,8 +4,8 @@
 int main() {
 	//Lexer lexer("let test_1 42\"Tesing \\\"strings\\\"\"()[]{}*/+-=<>< ><=>=->?^&:;.,|:=\n ");
 	Lexer lexer(
-		"let x = 42"
-		"let y = 2"
+		"let x = 42\n"
+		"let y = 2\n"
 	);
 
 	lexer.debug();

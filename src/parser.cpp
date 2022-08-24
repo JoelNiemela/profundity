@@ -43,6 +43,8 @@ LetStm* Parser::parse_let_stm() {
 
 	Exp* exp = parse_exp();
 
+	lexer.assert_token(lexer.pop(), Token::Type::NL);
+
 	return new LetStm(id.value, exp);
 }
 
