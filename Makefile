@@ -1,3 +1,7 @@
+LLVM_CPPFLAGS = `llvm-config --cppflags`
+LLVM_LDFLAGS = `llvm-config --ldflags`
+LLVM_LIBS = `llvm-config --libs`
+
 WIN_LDLIBS =
 
 ifeq ($(target), win32)
@@ -23,10 +27,10 @@ OBJDIR = obj/$(PLATFORM)
 
 SRC = $(shell find src -type f -name '*.cpp' -printf '%P\n')
 OBJ = $(patsubst %.cpp,$(OBJDIR)/%.o,$(SRC))
-CPPFLAGS = -DGLEW_STATIC -I src -I ../include 
+CPPFLAGS = -DGLEW_STATIC -I src -I ../include $(LLVM_CPPFLAGS)
 CXXFLAGS = -Wall -std=c++20
-LDFLAGS = $(PLATFORM_LDFLAGS)
-LDLIBS = $(PLATFORM_LDLIBS)
+LDFLAGS = $(PLATFORM_LDFLAGS) $(LLVM_LDFLAGS)
+LDLIBS = $(PLATFORM_LDLIBS) $(LLVM_LIBS)
 
 all: $(TARGET)
 
