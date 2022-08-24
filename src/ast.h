@@ -35,6 +35,12 @@ struct LetStm : Stm {
 	void print(std::ostream& out, int indent=0) const;
 };
 
+struct UnitExp : Exp {
+	UnitExp() {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
 struct NumExp : Exp {
 	std::string num;
 

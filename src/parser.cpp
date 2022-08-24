@@ -104,9 +104,14 @@ Exp* Parser::parse_exp_atom() {
 			}
 		}
 		case Token::Type::LPAR: {
-			Exp* exp = parse_exp();
-			lexer.assert_token(lexer.pop(), Token::Type::RPAR);
-			return exp;
+			if (lexer.peak().type == Token::Type::RPAR) {
+				lexer.pop();
+				return new UnitExp();
+			} else {
+				Exp* exp = parse_exp();
+				lexer.assert_token(lexer.pop(), Token::Type::RPAR);
+				return exp;
+			}
 		}
 		default:
 			std::cerr << "Syntax Error (Exp)" << std::endl;

@@ -27,6 +27,10 @@ void LetStm::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "}\n";
 }
 
+void UnitExp::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "UnitExp {}\n";
+}
+
 void NumExp::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "NumExp {\n";
 	indented(out, indent+1) << this->num << "\n";
