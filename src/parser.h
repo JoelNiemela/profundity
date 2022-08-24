@@ -3,10 +3,13 @@
 
 #include "lexer.h"
 #include "ast.h"
+#include "symtable.h"
 
 class Parser {
 private:
 	Lexer &lexer;
+
+	Symtable* symtable;
 public:
 	Parser(Lexer &lexer);
 

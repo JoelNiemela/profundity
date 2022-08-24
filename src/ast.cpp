@@ -1,13 +1,5 @@
 #include "ast.h"
 
-std::ostream& indented(std::ostream& out, int indent) {
-	for (int i = 0; i < indent; i++) {
-		out << "    ";
-	}
-
-	return out;
-}
-
 void Program::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "Program {\n";
 	for (const Stm* stm : this->stms) {
@@ -17,10 +9,17 @@ void Program::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "}\n";
 }
 
+void TypeExp::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "TypeExp {\n";
+	if (this->type) this->type->print(out, indent+1);
+	else indented(out, indent+1) << "NULL\n";
+	indented(out, indent) << "}\n";
+}
+
 void LetStm::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "LetStm {\n";
 	indented(out, indent+1) << this->id << "\n";
-	if (this->type_exp) this->type_exp->print(out, indent+1);
+	if (this->type) this->type->print(out, indent+1);
 	else indented(out, indent+1) << "NULL\n";
 	if (this->exp) this->exp->print(out, indent+1);
 	else indented(out, indent+1) << "NULL\n";

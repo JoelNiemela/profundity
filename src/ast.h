@@ -2,6 +2,7 @@
 #define AST_H
 
 #include "op.h"
+#include "type.h"
 
 #include <iostream>
 #include <vector>
@@ -25,12 +26,20 @@ struct Program : Node {
 	void print(std::ostream& out, int indent=0) const;
 };
 
+struct TypeExp : Exp {
+	Type* type;
+
+	TypeExp(Type* type) : type(type) {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
 struct LetStm : Stm {
 	std::string id;
-	Exp* type_exp;
+	Type* type;
 	Exp* exp;
 
-	LetStm(std::string id, Exp* type_exp, Exp* exp) : id(id), type_exp(type_exp), exp(exp) {}
+	LetStm(std::string id, Type* type, Exp* exp) : id(id), type(type), exp(exp) {}
 
 	void print(std::ostream& out, int indent=0) const;
 };

@@ -1,8 +1,16 @@
 #include "parser.h"
+
 #include "ast.h"
+#include "symtable.h"
+#include "comptime.h"
 
 Parser::Parser(Lexer &lexer) :
-	lexer(lexer) {}
+	lexer(lexer),
+	symtable(new Symtable())
+{
+	symtable->insert("i32", Symbol(new PrimitiveType(PrimitiveType::TYPE), new PrimitiveType(PrimitiveType::I32)));
+	symtable->insert("type", Symbol(new PrimitiveType(PrimitiveType::TYPE), new PrimitiveType(PrimitiveType::TYPE)));
+}
 
 Program* Parser::parse() {
 	return this->parse_program();
@@ -52,7 +60,11 @@ LetStm* Parser::parse_let_stm() {
 
 	lexer.assert_token(lexer.pop(), {Token::NL, Token::END});
 
-	return new LetStm(id.value, type_exp, exp);
+	ComptimeEngine comptime_engine(symtable);
+	Type* type = comptime_engine.eval_type_exp(type_exp);
+	symtable->insert(id.value, Symbol(type));
+
+	return new LetStm(id.value, type, exp);
 }
 
 Exp* Parser::parse_exp(int prec) {
@@ -116,6 +128,9 @@ Exp* Parser::parse_exp_atom() {
 		}
 		case Token::NL: {
 			lexer.assert_token(lexer.pop(), Token::TAB);
+
+			symtable = symtable->push_block();
+
 			Stm* stm;
 			std::vector<Stm*> stms;
 			do {
@@ -123,6 +138,9 @@ Exp* Parser::parse_exp_atom() {
 				if (stm) stms.push_back(stm);
 			} while (stm);
 			lexer.assert_token(lexer.peak(), Token::END);
+
+			symtable = symtable->pop_block();
+
 			return new BlockExp(stms);
 		}
 		default:
