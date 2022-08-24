@@ -1,7 +1,7 @@
 #ifndef AST_H
 #define AST_H
 
-#include "token.h"
+#include "op.h"
 
 #include <iostream>
 #include <vector>
@@ -40,33 +40,6 @@ struct NumExp : Exp {
 	NumExp(std::string num) : num(num) {}
 
 	void print(std::ostream& out, int indent=0) const;
-};
-
-struct Op {
-	enum Type {
-		MUL,
-		DIV,
-		ADD,
-		SUB,
-		ARROW,
-		NONE,
-		ERROR,
-	} type;
-
-	enum Assoc {
-		LEFT,
-		RIGHT,
-		INVALID,
-	};
-
-	static Assoc assoc(int prec);
-
-	int prec();
-
-	static Op from_token(Token::Type token);
-
-	Op(Op::Type type);
-	Op(Token token);
 };
 
 struct OpExp : Exp {
