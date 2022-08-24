@@ -4,18 +4,13 @@
 
 Op::Op(Op::Type type) : type(type) {}
 
-Op::Op(Token token) : Op(from_token(token.type)) {}
-
-Op Op::from_token(Token::Type token) {
-	switch (token) {
+std::optional<Op> Op::from_token(Token token) {
+	switch (token.type) {
 		case Token::Type::MUL: return Op(Op::MUL);
 		case Token::Type::DIV: return Op(Op::DIV);
 		case Token::Type::ADD: return Op(Op::ADD);
 		case Token::Type::SUB: return Op(Op::SUB);
-		case Token::Type::ENDINPUT: return Op(Op::NONE);
-		default:
-			std::cerr << "Error: invalid operator " << to_string(token) << std::endl;
-			return Op(Op::ERROR);
+		default: return std::nullopt;
 	}
 }
 

@@ -3,6 +3,8 @@
 
 #include "token.h"
 
+#include <optional>
+
 struct Op {
 	enum Type {
 		MUL,
@@ -10,8 +12,6 @@ struct Op {
 		ADD,
 		SUB,
 		ARROW,
-		NONE,
-		ERROR,
 	} type;
 
 	enum Assoc {
@@ -24,10 +24,9 @@ struct Op {
 
 	int prec();
 
-	static Op from_token(Token::Type token);
+	static std::optional<Op> from_token(Token token);
 
 	Op(Op::Type type);
-	Op(Token token);
 };
 
 #endif

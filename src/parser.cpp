@@ -25,8 +25,10 @@ Stm* Parser::parse_stm() {
 	switch (token.type) {
 		case Token::Type::LET:
 			return parse_let_stm();
+		case Token::Type::ENDINPUT:
+			return nullptr;
 		default:
-			std::cerr << "Syntax Error (Stm)" << std::endl;
+			std::cerr << "Syntax Error (Stm): Expected LET, found " << to_string(token.type) << std::endl;
 			return nullptr;
 	}
 }
@@ -51,19 +53,23 @@ Exp* Parser::parse_exp(int prec) {
 
 	if (Op::assoc(prec) == Op::Assoc::LEFT) {
 		Exp* lexp = parse_exp(prec-1);
-		while (Op(lexer.peak()).prec() == prec) {
-			Op op = lexer.pop();
+
+		std::optional<Op> op;
+		while ((op = Op::from_token(lexer.peak())) && op->prec() == prec) {
+			lexer.pop();
 			Exp* rexp = parse_exp(prec-1);
-			lexp = new OpExp(lexp, rexp, op);
+			lexp = new OpExp(lexp, rexp, *op);
 		}
 
 		return lexp;
 	} else if (Op::assoc(prec) == Op::Assoc::RIGHT) {
 		Exp* lexp = parse_exp(prec-1);
-		if (Op(lexer.peak()).prec() == prec) {
-			Op op = lexer.pop();
+
+		std::optional<Op> op;
+		if ((op = Op::from_token(lexer.peak())) && op->prec() == prec) {
+			lexer.pop();
 			Exp* rexp = parse_exp(prec);
-			lexp = new OpExp(lexp, rexp, op);
+			lexp = new OpExp(lexp, rexp, *op);
 		}
 
 		return lexp;
