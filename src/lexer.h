@@ -23,6 +23,7 @@ public:
 
 	bool assert_token(Token found, Token::Type expected);
 
+	void reset();
 	void debug();
 
 private:

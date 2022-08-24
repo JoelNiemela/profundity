@@ -37,6 +37,11 @@ bool Lexer::assert_token(Token found, Token::Type expected) {
 	return true;
 }
 
+void Lexer::reset() {
+	this->pos = 0;
+	this->lookahead = std::nullopt;
+}
+
 void Lexer::debug() {
 	Token t;
 	do {

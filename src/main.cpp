@@ -8,6 +8,9 @@ int main() {
 		"let y = 2"
 	);
 
+	lexer.debug();
+	lexer.reset();
+
 	Parser parser(lexer);
 	parser.parse()->print(std::cout);
 }
