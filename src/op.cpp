@@ -36,10 +36,10 @@ Op::Assoc Op::assoc(int prec) {
 
 int Op::prec() {
 	switch (this->type) {
-		case Op::Type::MUL:   return 10;
-		case Op::Type::DIV:   return 10;
-		case Op::Type::ADD:   return 10;
-		case Op::Type::SUB:   return 10;
+		case Op::Type::MUL:   return 5;
+		case Op::Type::DIV:   return 5;
+		case Op::Type::ADD:   return 6;
+		case Op::Type::SUB:   return 6;
 		case Op::Type::ARROW: return 10;
 		default:
 			std::cerr << "Error: Unknown operator in ast.cpp:Op::prec" << std::endl;
