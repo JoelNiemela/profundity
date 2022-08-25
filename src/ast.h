@@ -26,10 +26,10 @@ struct Program : Node {
 	void print(std::ostream& out, int indent=0) const;
 };
 
-struct TypeExp : Exp {
-	Type* type;
+struct ValueExp : Exp {
+	Value* value;
 
-	TypeExp(Type* type) : type(type) {}
+	ValueExp(Value* value) : value(value) {}
 
 	void print(std::ostream& out, int indent=0) const;
 };

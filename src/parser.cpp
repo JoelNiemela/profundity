@@ -3,13 +3,14 @@
 #include "ast.h"
 #include "symtable.h"
 #include "comptime.h"
+#include "type.h"
 
 Parser::Parser(Lexer &lexer) :
 	lexer(lexer),
 	symtable(new Symtable())
 {
-	symtable->insert("i32", Symbol(new PrimitiveType(PrimitiveType::TYPE), new PrimitiveType(PrimitiveType::I32)));
-	symtable->insert("type", Symbol(new PrimitiveType(PrimitiveType::TYPE), new PrimitiveType(PrimitiveType::TYPE)));
+	symtable->insert("i32", Symbol(new ComptimeType(ComptimeType::TYPE), new TypeValue(new PrimitiveType(PrimitiveType::I32))));
+	symtable->insert("type", Symbol(new ComptimeType(ComptimeType::TYPE), new TypeValue(new ComptimeType(ComptimeType::TYPE))));
 }
 
 Program* Parser::parse() {
@@ -60,11 +61,22 @@ LetStm* Parser::parse_let_stm() {
 
 	lexer.assert_token(lexer.pop(), {Token::NL, Token::END});
 
-	ComptimeEngine comptime_engine(symtable);
-	Type* type = comptime_engine.eval_type_exp(type_exp);
-	symtable->insert(id.value, Symbol(type));
-
-	return new LetStm(id.value, type, exp);
+	ValueExp* type;
+	TypeValue* type_value;
+	if ((type = dynamic_cast<ValueExp*>(type_exp)) && (type_value = dynamic_cast<TypeValue*>(type->value))) {
+		ValueExp* value_exp;
+		if ((value_exp = dynamic_cast<ValueExp*>(exp))) {
+			symtable->insert(id.value, Symbol(type_value->value_type, value_exp->value));
+			return new LetStm(id.value, type_value->value_type, value_exp);
+		} else {
+			symtable->insert(id.value, Symbol(type_value->value_type));
+			return new LetStm(id.value, type_value->value_type, exp);
+		}
+	} else {
+		std::cerr << "Error: type must be known at compile time" << std::endl;
+		type_exp->print(std::cerr);
+		return nullptr;
+	}
 }
 
 Exp* Parser::parse_exp(int prec) {
@@ -106,6 +118,7 @@ Exp* Parser::parse_exp_atom() {
 	switch (token.type) {
 		case Token::NUM:
 			return new NumExp(token.value);
+			//return new ValueExp(new ComptimeValue(ComptimeType::NUM, token.value));
 		case Token::ID: {
 			std::string id = token.value;
 			if (lexer.peak().type == Token::COLON) {
@@ -113,13 +126,19 @@ Exp* Parser::parse_exp_atom() {
 				Exp* type_exp = parse_exp();
 				return new RecordExp(id, type_exp);
 			} else {
-				return new VarExp(id);
+				std::optional<Symbol> symbol = symtable->lookup(id);
+				if (symbol) {
+					return new ValueExp(symbol->value);
+				} else {
+					return new VarExp(id);
+				}
 			}
 		}
 		case Token::LPAR: {
 			if (lexer.peak().type == Token::RPAR) {
 				lexer.pop();
 				return new UnitExp();
+				//return new ValueExp(new ComptimeValue(ComptimeType::UNIT, "()"));
 			} else {
 				Exp* exp = parse_exp();
 				lexer.assert_token(lexer.pop(), Token::RPAR);

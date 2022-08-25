@@ -9,9 +9,9 @@ void Program::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "}\n";
 }
 
-void TypeExp::print(std::ostream& out, int indent) const {
-	indented(out, indent) << "TypeExp {\n";
-	if (this->type) this->type->print(out, indent+1);
+void ValueExp::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "ValueExp {\n";
+	if (this->value) this->value->print(out, indent+1);
 	else indented(out, indent+1) << "NULL\n";
 	indented(out, indent) << "}\n";
 }
@@ -27,7 +27,8 @@ void LetStm::print(std::ostream& out, int indent) const {
 }
 
 void UnitExp::print(std::ostream& out, int indent) const {
-	indented(out, indent) << "UnitExp {}\n";
+	indented(out, indent) << "UnitExp {\n";
+	indented(out, indent) << "}\n";
 }
 
 void NumExp::print(std::ostream& out, int indent) const {
