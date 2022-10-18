@@ -37,6 +37,11 @@ Stm* Parser::parse_stm() {
 		case Token::Type::ENDINPUT:
 			return nullptr;
 		default:
+			if (Exp* exp; (exp = this->parse_exp())) {
+				lexer.assert_token(lexer.pop(), Token::NL);
+				return new ExpStm(exp);
+			}
+
 			std::cerr << "Syntax Error (Stm): Expected LET, found " << to_string(token.type) << std::endl;
 			return nullptr;
 	}

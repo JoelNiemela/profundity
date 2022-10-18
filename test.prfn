@@ -1,4 +1,6 @@
 let i: type = i32
-let x: i = 2
-let y: i = x
-let z: () -> () = 123
+
+let main: () -> () =
+	let x: i = 2
+	let y: i = x
+	x + y

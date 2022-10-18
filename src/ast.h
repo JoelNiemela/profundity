@@ -44,6 +44,14 @@ struct LetStm : Stm {
 	void print(std::ostream& out, int indent=0) const;
 };
 
+struct ExpStm : Stm {
+	Exp* exp;
+
+	ExpStm(Exp* exp) : exp(exp) {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
 struct UnitExp : Exp {
 	UnitExp() {}
 

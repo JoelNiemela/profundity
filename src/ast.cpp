@@ -26,6 +26,13 @@ void LetStm::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "}\n";
 }
 
+void ExpStm::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "ExpStm {\n";
+	if (this->exp) this->exp->print(out, indent+1);
+	else indented(out, indent+1) << "NULL\n";
+	indented(out, indent) << "}\n";
+}
+
 void UnitExp::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "UnitExp {\n";
 	indented(out, indent) << "}\n";
