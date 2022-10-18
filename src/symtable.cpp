@@ -15,14 +15,12 @@ Symtable* Symtable::pop_block() {
 #include <iostream>
 
 std::optional<Symbol> Symtable::lookup(std::string id) {
-	auto it = symtable.find(id);
-	if (it != symtable.end()) {
+	if (auto it = symtable.find(id); it != symtable.end()) {
 		return it->second;
 	}
 
 	if (parent) {
-		std::optional<Symbol> symbol = parent->lookup(id);
-		if (symbol) return symbol;
+		return parent->lookup(id);
 	}
 
 	return std::nullopt;
