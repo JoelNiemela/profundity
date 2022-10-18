@@ -5,6 +5,7 @@
 #include <string>
 
 int main() {
+	// Example string containing all tokens:
 	//Lexer lexer("let test_1 42\"Tesing \\\"strings\\\"\"()[]{}*/+-=<>< ><=>=->?^&:;.,|:=\n ");
 	
 	std::ifstream file("./test.prfn");
