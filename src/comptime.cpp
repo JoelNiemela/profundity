@@ -5,8 +5,6 @@
 ComptimeState::ComptimeState() {}
 
 Value* ComptimeState::run_exp(Exp *exp) {
-	std::cout << "run_exp" << std::endl;
-	exp->print(std::cout);
 	if (UnitExp* unit_exp; (unit_exp = dynamic_cast<UnitExp*>(exp))) {
 		return new TypeValue(new ComptimeType(ComptimeType::UNIT));
 	} if (OpExp* op_exp; (op_exp = dynamic_cast<OpExp*>(exp))) {
