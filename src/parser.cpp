@@ -132,7 +132,7 @@ Exp* Parser::parse_exp_atom() {
 				return new RecordExp(id, type_exp);
 			} else {
 				std::optional<Symbol> symbol = symtable->lookup(id);
-				if (symbol) {
+				if (symbol && symbol->value) {
 					return new ValueExp(symbol->value);
 				} else {
 					return new VarExp(id);
