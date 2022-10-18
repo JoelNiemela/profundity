@@ -1,3 +1,3 @@
 let i: type = i32
-let x: i32 = 2 + 2
+let x: i = 2 + 2
 let z: () -> () = ()

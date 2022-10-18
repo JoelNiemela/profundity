@@ -1,13 +1,12 @@
 #include "parser.h"
 
 #include "ast.h"
-#include "symtable.h"
-#include "comptime.h"
 #include "type.h"
 
 Parser::Parser(Lexer &lexer) :
 	lexer(lexer),
-	symtable(new Symtable())
+	symtable(new Symtable()),
+	comptime_state(new ComptimeState())
 {
 	symtable->insert("i32", Symbol(new ComptimeType(ComptimeType::TYPE), new TypeValue(new PrimitiveType(PrimitiveType::I32))));
 	symtable->insert("type", Symbol(new ComptimeType(ComptimeType::TYPE), new TypeValue(new ComptimeType(ComptimeType::TYPE))));
@@ -73,10 +72,16 @@ LetStm* Parser::parse_let_stm() {
 			return new LetStm(id.value, type_value->value_type, exp);
 		}
 	} else {
-		std::cerr << "Error: type must be known at compile time" << std::endl;
-		type_exp->print(std::cerr);
-		return nullptr;
+		Value* value = this->comptime_state->run_exp(type_exp);
+		if (TypeValue* type_value; (type_value = dynamic_cast<TypeValue*>(value))) {
+			symtable->insert(id.value, Symbol(type_value->value_type, type_value));
+			return new LetStm(id.value, type_value->value_type, new ValueExp(type_value));
+		}
 	}
+
+	std::cerr << "Error: type must be known at compile time" << std::endl;
+	type_exp->print(std::cerr);
+	return nullptr;
 }
 
 Exp* Parser::parse_exp(int prec) {

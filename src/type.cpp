@@ -28,6 +28,13 @@ void PrimitiveType::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "}\n";
 }
 
+void FunctionType::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "FunctionType {\n";
+	this->arg_type->print(out, indent+1);
+	this->res_type->print(out, indent+1);
+	indented(out, indent) << "}\n";
+}
+
 void ComptimeValue::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "ComptimeValue {\n";
 	indented(out, indent+1) << this->value << "\n";

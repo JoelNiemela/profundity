@@ -50,6 +50,15 @@ struct PrimitiveType : Type {
 	void print(std::ostream& out, int indent=0) const;
 };
 
+struct FunctionType : Type {
+	Type* arg_type;
+	Type* res_type;
+
+	FunctionType(Type* arg_type, Type* res_type) : arg_type(arg_type), res_type(res_type) {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
 struct ComptimeValue : Value {
 	std::string value;
 

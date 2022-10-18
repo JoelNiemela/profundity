@@ -4,12 +4,15 @@
 #include "lexer.h"
 #include "ast.h"
 #include "symtable.h"
+#include "comptime.h"
 
 class Parser {
 private:
 	Lexer &lexer;
 
 	Symtable* symtable;
+
+	ComptimeState* comptime_state;
 public:
 	Parser(Lexer &lexer);
 
