@@ -1,4 +1,4 @@
 let i: type = i32
 let x: i = 2
 let y: i = x
-let z: () -> () = ()
+let z: () -> () = 123

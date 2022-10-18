@@ -75,7 +75,7 @@ LetStm* Parser::parse_let_stm() {
 		Value* value = this->comptime_state->run_exp(type_exp);
 		if (TypeValue* type_value; (type_value = dynamic_cast<TypeValue*>(value))) {
 			symtable->insert(id.value, Symbol(type_value->value_type, type_value));
-			return new LetStm(id.value, type_value->value_type, new ValueExp(type_value));
+			return new LetStm(id.value, type_value->value_type, exp);
 		}
 	}
 
