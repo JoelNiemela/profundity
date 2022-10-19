@@ -63,6 +63,7 @@ std::string to_string(ComptimeType::Type type) {
 std::string to_string(PrimitiveType::Type type) {
 	switch (type) {
 		case PrimitiveType::I32:  return "I32";
+		case PrimitiveType::STR:  return "STR";
 		default:
 			std::cerr << "Error: Unknown type in type.cpp:to_string" << std::endl;
 			return "UNKNOWN";

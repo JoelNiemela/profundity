@@ -1,3 +1,4 @@
+let age = 42
 let name = "Testing"
 
 let set = {x*2 | Integer}

@@ -43,6 +43,7 @@ struct ComptimeType : Type {
 struct PrimitiveType : Type {
 	enum Type {
 		I32,
+		STR,
 	} type_variant;
 
 	PrimitiveType(Type type) : type_variant(type) {}
@@ -70,6 +71,9 @@ struct ComptimeValue : Value {
 
 struct PrimitiveValue : Value {
 	std::string value;
+
+	PrimitiveValue(PrimitiveType* type, std::string value) : Value(type), value(value) {}
+	PrimitiveValue(PrimitiveType::Type type, std::string value) : Value(new PrimitiveType(type)), value(value) {}
 
 	void print(std::ostream& out, int indent=0) const;
 };

@@ -85,6 +85,18 @@ LetStm* Parser::parse_let_stm() {
 		}
 	}
 
+	ValueExp* value_exp;
+	if ((value_exp = dynamic_cast<ValueExp*>(exp))) {
+		Type* type = value_exp->value->type;
+		if ((value_exp = dynamic_cast<ValueExp*>(exp))) {
+			symtable->insert(id.value, Symbol(type, value_exp->value));
+			return new LetStm(id.value, type, value_exp);
+		} else {
+			symtable->insert(id.value, Symbol(type));
+			return new LetStm(id.value, type, exp);
+		}
+	}
+
 	std::cerr << "Error at " << id.line << ":" << id.column << ": type must be known at compile time" << std::endl;
 	type_exp->print(std::cerr);
 	return nullptr;
@@ -134,11 +146,11 @@ Exp* Parser::parse_exp_atom() {
 
 	switch (token.type) {
 		case Token::NUM:
-			return new NumExp(token.value);
-			//return new ValueExp(new ComptimeValue(ComptimeType::NUM, token.value));
+			//return new NumExp(token.value);
+			return new ValueExp(new ComptimeValue(ComptimeType::NUM, token.value));
 		case Token::STRING:
-			return new StrExp(token.value);
-			//return new ValueExp(new ComptimeValue(ComptimeType::STR, token.value));
+			//return new StrExp(token.value);
+			return new ValueExp(new PrimitiveValue(PrimitiveType::STR, token.value));
 		case Token::ID: {
 			std::string id = token.value;
 			if (lexer.peak().type == Token::COLON) {
