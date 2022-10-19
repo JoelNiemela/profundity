@@ -156,7 +156,12 @@ Exp* Parser::parse_exp_atom() {
 			if (lexer.peak().type == Token::COLON) {
 				lexer.pop();
 				Exp* type_exp = parse_exp();
-				return new RecordExp(id, type_exp);
+				Value* value = this->comptime_state->run_exp(type_exp);
+				if (TypeValue* type_value; (type_value = dynamic_cast<TypeValue*>(value))) {
+					return new ValueExp(new TypeValue(new RecordType(id, type_value->value_type)));
+				} else {
+					return new RecordExp(id, type_exp);
+				}
 			} else {
 				std::optional<Symbol> symbol = symtable->lookup(id);
 				if (symbol && symbol->value) {

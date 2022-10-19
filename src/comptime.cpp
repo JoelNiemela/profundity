@@ -5,9 +5,11 @@
 ComptimeState::ComptimeState() {}
 
 Value* ComptimeState::run_exp(Exp *exp) {
-	if (UnitExp* unit_exp; (unit_exp = dynamic_cast<UnitExp*>(exp))) {
+	if (ValueExp* value_exp; (value_exp = dynamic_cast<ValueExp*>(exp))) {
+		return value_exp->value;
+	} else if (UnitExp* unit_exp; (unit_exp = dynamic_cast<UnitExp*>(exp))) {
 		return new TypeValue(new ComptimeType(ComptimeType::UNIT));
-	} if (OpExp* op_exp; (op_exp = dynamic_cast<OpExp*>(exp))) {
+	} else if (OpExp* op_exp; (op_exp = dynamic_cast<OpExp*>(exp))) {
 		switch (op_exp->op.type) {
 			case Op::ARROW: {
 				TypeValue* lval = dynamic_cast<TypeValue*>(this->run_exp(op_exp->lexp));

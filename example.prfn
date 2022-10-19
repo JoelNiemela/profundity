@@ -1,9 +1,7 @@
 let age = 42
 let name = "Testing"
 
-let set = {x*2 | Integer}
-
-let main: (a: int) -> int =
+let main: (a: i32) -> i32 =
 	a
 
 let for: []T -> (T -> T) -> []T = builtin
@@ -30,3 +28,5 @@ let User = (
 	name: String,
 	age: i32,
 )
+
+let set = {x*2 | x: Integer}

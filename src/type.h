@@ -60,6 +60,15 @@ struct FunctionType : Type {
 	void print(std::ostream& out, int indent=0) const;
 };
 
+struct RecordType : Type {
+	std::string id;
+	Type* type;
+
+	RecordType(std::string id, Type* type) : id(id), type(type) {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
 struct ComptimeValue : Value {
 	std::string value;
 

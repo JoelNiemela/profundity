@@ -35,6 +35,13 @@ void FunctionType::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "}\n";
 }
 
+void RecordType::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "RecordType {\n";
+	indented(out, indent+1) << this->id << "\n";
+	this->type->print(out, indent+1);
+	indented(out, indent) << "}\n";
+}
+
 void ComptimeValue::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "ComptimeValue {\n";
 	indented(out, indent+1) << this->value << "\n";
