@@ -204,6 +204,11 @@ Token Lexer::next_token() {
 	if (c == ',') return this->make_token(Token::COMMA, ",");
 	if (c == '.') return this->make_token(Token::DOT, ".");
 	if (c == '|') return this->make_token(Token::PIPE, "|");
+	if (c == '~') {
+		c = peak_char();
+		if (c == '>') {pop_char(); return this->make_token(Token::THROUGH, "~>");}
+		else return this->make_token(Token::ERROR, std::string(1, c));
+	}
 	// whitespace
 	if (c == '\n') {
 		unsigned int count = 1;
