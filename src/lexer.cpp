@@ -54,7 +54,7 @@ bool Lexer::assert_token(Token found, std::set<Token::Type> expected) {
 
 void Lexer::reset() {
 	this->pos = 0;
-	this->line = 0;
+	this->line = 1;
 	this->column = 0;
 	this->lookahead = std::nullopt;
 	this->line_indent = 0;

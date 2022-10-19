@@ -15,7 +15,7 @@ class Lexer {
 private:
 	std::string input;
 	std::size_t pos = 0;
-	std::size_t line = 0;
+	std::size_t line = 1;
 	std::size_t column = 0;
 	std::optional<Token> lookahead = std::nullopt;
 	int line_indent = 0;
