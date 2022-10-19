@@ -34,6 +34,7 @@ std::string to_string(Token::Type type) {
 		case Token::OPT:       return "OPT";
 		case Token::PTR:       return "PTR";
 		case Token::REF:       return "REF";
+		case Token::ARRAY:       return "ARRAY";
 		// symbols
 		case Token::COLON:     return "COLON";
 		case Token::SEMICOLON: return "SEMICOLON";

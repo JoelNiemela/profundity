@@ -21,6 +21,7 @@ struct Op {
 		OPT,
 		PTR,
 		REF,
+		ARRAY,
 	} type;
 
 	enum Assoc {

@@ -164,7 +164,12 @@ Token Lexer::next_token() {
 	// brackets
 	if (c == '(') return this->make_token(Token::LPAR, "(");
 	if (c == ')') return this->make_token(Token::RPAR, ")");
-	if (c == '[') return this->make_token(Token::LBRACKET, "[");
+	if (c == '[') {
+		// type operators
+		if (peak_char() == ']') {pop_char(); return this->make_token(Token::ARRAY, "[]");}
+		// brackets
+		else return this->make_token(Token::LBRACKET, "[");
+	}
 	if (c == ']') return this->make_token(Token::RBRACKET, "]");
 	if (c == '{') return this->make_token(Token::LBRACE, "{");
 	if (c == '}') return this->make_token(Token::RBRACE, "}");
@@ -260,6 +265,7 @@ static const std::vector<std::pair<Token::Type, std::regex> > token_patterns = {
 	{Token::Type::OPT,       std::regex("\\?")},
 	{Token::Type::PTR,       std::regex("\\^")},
 	{Token::Type::REF,       std::regex("&")},
+	{Token::Type::ARRAY,     std::regex("\\[\\]")},
 	// symbols
 	{Token::Type::COLON,     std::regex(":")},
 	{Token::Type::SEMICOLON, std::regex(";")},

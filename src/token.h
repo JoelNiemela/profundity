@@ -29,6 +29,7 @@ struct Token {
 		OPT,
 		PTR,
 		REF,
+		ARRAY,
 		// symbols
 		COLON,
 		SEMICOLON,
