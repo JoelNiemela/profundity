@@ -42,7 +42,8 @@ Stm* Parser::parse_stm() {
 				return new ExpStm(exp);
 			}
 
-			std::cerr << "Syntax Error (Stm): Expected LET, found " << to_string(token.type) << std::endl;
+			std::cerr << "Syntax Error (Stm) at " << token.line << ":" << token.column
+					  << ": Expected LET, found " << to_string(token.type) << std::endl;
 			return nullptr;
 	}
 }
@@ -123,7 +124,8 @@ Exp* Parser::parse_exp(int prec) {
 		}
 	}
 
-	std::cerr << "Syntax Error (Exp): Invalid operator" << std::endl;
+	Token token = lexer.peak();
+	std::cerr << "Syntax Error (Exp) at " << token.line << ":" << token.column << ": Invalid operator" << std::endl;
 	return nullptr;
 }
 
@@ -178,7 +180,7 @@ Exp* Parser::parse_exp_atom() {
 			return new BlockExp(stms);
 		}
 		default:
-			std::cerr << "Syntax Error (Exp)" << std::endl;
+			std::cerr << "Syntax Error (Exp) at " << token.line << ":" << token.column << std::endl;
 			return nullptr;
 	}
 }
