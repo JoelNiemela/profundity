@@ -66,6 +66,14 @@ struct NumExp : Exp {
 	void print(std::ostream& out, int indent=0) const;
 };
 
+struct StrExp : Exp {
+	std::string str;
+
+	StrExp(std::string str) : str(str) {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
 struct VarExp : Exp {
 	std::string id;
 

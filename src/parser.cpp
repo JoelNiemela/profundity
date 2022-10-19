@@ -136,6 +136,9 @@ Exp* Parser::parse_exp_atom() {
 		case Token::NUM:
 			return new NumExp(token.value);
 			//return new ValueExp(new ComptimeValue(ComptimeType::NUM, token.value));
+		case Token::STRING:
+			return new StrExp(token.value);
+			//return new ValueExp(new ComptimeValue(ComptimeType::STR, token.value));
 		case Token::ID: {
 			std::string id = token.value;
 			if (lexer.peak().type == Token::COLON) {

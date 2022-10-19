@@ -44,6 +44,12 @@ void NumExp::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "}\n";
 }
 
+void StrExp::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "StrExp {\n";
+	indented(out, indent+1) << this->str << "\n";
+	indented(out, indent) << "}\n";
+}
+
 void VarExp::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "VarExp {\n";
 	indented(out, indent+1) << this->id << "\n";
