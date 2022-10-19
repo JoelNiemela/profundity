@@ -30,6 +30,7 @@ struct Op {
 	};
 
 	static Assoc assoc(int prec);
+	static bool unary(int prec);
 
 	int prec();
 

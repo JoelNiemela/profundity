@@ -94,32 +94,37 @@ Exp* Parser::parse_exp(int prec) {
 		return parse_exp_atom();
 	}
 
-	if (Op::assoc(prec) == Op::Assoc::LEFT) {
-		Exp* lexp = parse_exp(prec-1);
+	if (std::optional<Op> op; (op = Op::from_token(lexer.peak())) && op->prec() == prec && Op::unary(prec)) {
+		lexer.pop();
+		return new OpExp(nullptr, parse_exp(prec), *op);
+	} else { 
+		if (Op::assoc(prec) == Op::Assoc::LEFT) {
+			Exp* lexp = parse_exp(prec-1);
 
-		std::optional<Op> op;
-		while ((op = Op::from_token(lexer.peak())) && op->prec() == prec) {
-			lexer.pop();
-			Exp* rexp = parse_exp(prec-1);
-			lexp = new OpExp(lexp, rexp, *op);
+			std::optional<Op> op;
+			while ((op = Op::from_token(lexer.peak())) && op->prec() == prec) {
+				lexer.pop();
+				Exp* rexp = parse_exp(prec-1);
+				lexp = new OpExp(lexp, rexp, *op);
+			}
+
+			return lexp;
+		} else if (Op::assoc(prec) == Op::Assoc::RIGHT) {
+			Exp* lexp = parse_exp(prec-1);
+
+			std::optional<Op> op;
+			if ((op = Op::from_token(lexer.peak())) && op->prec() == prec) {
+				lexer.pop();
+				Exp* rexp = parse_exp(prec);
+				lexp = new OpExp(lexp, rexp, *op);
+			}
+
+			return lexp;
 		}
-
-		return lexp;
-	} else if (Op::assoc(prec) == Op::Assoc::RIGHT) {
-		Exp* lexp = parse_exp(prec-1);
-
-		std::optional<Op> op;
-		if ((op = Op::from_token(lexer.peak())) && op->prec() == prec) {
-			lexer.pop();
-			Exp* rexp = parse_exp(prec);
-			lexp = new OpExp(lexp, rexp, *op);
-		}
-
-		return lexp;
-	} else {
-		std::cerr << "Syntax Error (Exp): Invalid operator" << std::endl;
-		return nullptr;
 	}
+
+	std::cerr << "Syntax Error (Exp): Invalid operator" << std::endl;
+	return nullptr;
 }
 
 Exp* Parser::parse_exp_atom() {
