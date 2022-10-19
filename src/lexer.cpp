@@ -9,15 +9,7 @@
 #include <iostream>
 #include <numeric>
 
-Lexer::Lexer(std::string input) :
-	input(input),
-	pos(0),
-	line(0),
-	column(0),
-	lookahead(std::nullopt),
-	line_indent(0),
-	indent_diff(0),
-	at_start_of_line(true) {}
+Lexer::Lexer(std::string input) : input(input) {}
 
 Token Lexer::peak() {
 	if (!this->lookahead) {

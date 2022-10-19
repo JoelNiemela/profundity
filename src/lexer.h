@@ -14,13 +14,13 @@ class Lexer {
 
 private:
 	std::string input;
-	std::size_t pos;
-	std::size_t line;
-	std::size_t column;
-	std::optional<Token> lookahead;
-	int line_indent;
-	int indent_diff;
-	bool at_start_of_line;
+	std::size_t pos = 0;
+	std::size_t line = 0;
+	std::size_t column = 0;
+	std::optional<Token> lookahead = std::nullopt;
+	int line_indent = 0;
+	int indent_diff = 0;
+	bool at_start_of_line = true;
 
 public:
 	Lexer(std::string input);
