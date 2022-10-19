@@ -41,6 +41,7 @@ std::string to_string(Token::Type type) {
 		case Token::COMMA:     return "COMMA";
 		case Token::PIPE:      return "PIPE";
 		case Token::ASSIGN:    return "ASSIGN";
+		case Token::THROUGH:   return "THROUGH";
 		// indentation
 		case Token::TAB:       return "TAB";
 		case Token::END:       return "END";

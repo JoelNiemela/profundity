@@ -254,6 +254,7 @@ static const std::vector<std::pair<Token::Type, std::regex> > token_patterns = {
 	{Token::Type::DOT,       std::regex("\\.")},
 	{Token::Type::PIPE,      std::regex("\\|")},
 	{Token::Type::ASSIGN,    std::regex(":=")},
+	{Token::Type::THROUGH,   std::regex("~>")},
 	// whitespace
 	{Token::Type::NL,        std::regex("\\n+")},
 	{Token::Type::WS,        std::regex(" +")},

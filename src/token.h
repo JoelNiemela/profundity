@@ -36,6 +36,7 @@ struct Token {
 		COMMA,
 		PIPE,
 		ASSIGN,
+		THROUGH,
 		// indentation
 		TAB,
 		END,
