@@ -15,6 +15,8 @@ class Lexer {
 private:
 	std::string input;
 	std::size_t pos;
+	std::size_t line;
+	std::size_t column;
 	std::optional<Token> lookahead;
 	int line_indent;
 	int indent_diff;
@@ -33,6 +35,8 @@ public:
 	void debug();
 
 private:
+	Token make_token(Token::Type type, std::string value);
+
 	Token next_token();
 	Token::Type match_token(std::string token);
 

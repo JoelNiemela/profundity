@@ -49,6 +49,10 @@ struct Token {
 	} type;
 
 	std::string value;
+
+	std::size_t pos;
+	std::size_t line;
+	std::size_t column;
 };
 
 std::string to_string(Token::Type);

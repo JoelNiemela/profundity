@@ -2,6 +2,7 @@
 #include "token.h"
 
 #include <cctype>
+#include <string>
 #include <vector>
 #include <utility> // pair
 #include <regex>
@@ -11,6 +12,9 @@
 Lexer::Lexer(std::string input) :
 	input(input),
 	pos(0),
+	line(0),
+	column(0),
+	lookahead(std::nullopt),
 	line_indent(0),
 	indent_diff(0),
 	at_start_of_line(true) {}
@@ -58,6 +62,8 @@ bool Lexer::assert_token(Token found, std::set<Token::Type> expected) {
 
 void Lexer::reset() {
 	this->pos = 0;
+	this->line = 0;
+	this->column = 0;
 	this->lookahead = std::nullopt;
 	this->line_indent = 0;
 	this->indent_diff = 0;
@@ -77,7 +83,7 @@ void Lexer::debug() {
 	str += peak_char();
 
 	if (str[0] == '\0') {
-		return Token{Token::Type::ENDINPUT};
+		return this->make_token(Token::Type::ENDINPUT);
 	}
 
 	while (match_token(str) == Token::Type::ERROR) {
@@ -96,7 +102,7 @@ void Lexer::debug() {
 	if (type == Token::Type::WS) {
 		return this->next_token();
 	} else {
-		return Token{type, str};
+		return this->make_token(type, str);
 	}
 }*/
 
@@ -108,15 +114,25 @@ bool Lexer::is_id_char_head(char c) {
 	return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
 }
 
+Token Lexer::make_token(Token::Type type, std::string value) {
+	return Token{
+		type,
+		value,
+		this->pos,
+		this->line,
+		this->column,
+	};
+}
+
 Token Lexer::next_token() {
 	// indentation
 	if (at_start_of_line) {
 		if (indent_diff > 0) {
 			indent_diff--;
-			return Token{Token::TAB, "\t"};
+			return this->make_token(Token::TAB, "\t");
 		} else if (indent_diff < 0) {
 			indent_diff++;
-			return Token{Token::END, ""};
+			return this->make_token(Token::END, "");
 		}
 
 		at_start_of_line = false;
@@ -130,9 +146,9 @@ Token Lexer::next_token() {
 		while (is_id_char(peak_char())) str += pop_char();
 
 		// keywords
-		if (str == "let") return Token{Token::LET, str};
+		if (str == "let") return this->make_token(Token::LET, str);
 		// literals
-		else return Token{Token::ID, str};
+		else return this->make_token(Token::ID, str);
 	}
 	if (isdigit(c)) {
 		std::string str(1, c);
@@ -140,7 +156,7 @@ Token Lexer::next_token() {
 		if (peak_char() == '.') str += pop_char();
 		while (isdigit(peak_char())) str += pop_char();
 
-		return Token{Token::NUM, str};
+		return this->make_token(Token::NUM, str);
 	}
 	if (c == '"') {
 		std::string str = "";
@@ -151,51 +167,51 @@ Token Lexer::next_token() {
 			}
 		}
 
-		return Token{Token::STRING, str};
+		return this->make_token(Token::STRING, str);
 	}
 	// brackets
-	if (c == '(') return Token{Token::LPAR, "("};
-	if (c == ')') return Token{Token::RPAR, ")"};
-	if (c == '[') return Token{Token::LBRACKET, "["};
-	if (c == ']') return Token{Token::RBRACKET, "]"};
-	if (c == '{') return Token{Token::LBRACE, "{"};
-	if (c == '}') return Token{Token::RBRACE, "}"};
+	if (c == '(') return this->make_token(Token::LPAR, "(");
+	if (c == ')') return this->make_token(Token::RPAR, ")");
+	if (c == '[') return this->make_token(Token::LBRACKET, "[");
+	if (c == ']') return this->make_token(Token::RBRACKET, "]");
+	if (c == '{') return this->make_token(Token::LBRACE, "{");
+	if (c == '}') return this->make_token(Token::RBRACE, "}");
 	// arithmetic operators
-	if (c == '*') return Token{Token::MUL, "*"};
-	if (c == '/') return Token{Token::DIV, "/"};
-	if (c == '+') return Token{Token::ADD, "+"};
+	if (c == '*') return this->make_token(Token::MUL, "*");
+	if (c == '/') return this->make_token(Token::DIV, "/");
+	if (c == '+') return this->make_token(Token::ADD, "+");
 	if (c == '-') {
 		// type operators
-		if (peak_char() == '>') {pop_char(); return Token{Token::ARROW, "->"};}
+		if (peak_char() == '>') {pop_char(); return this->make_token(Token::ARROW, "->");}
 		// arithmetic operators
-		else return Token{Token::SUB, "-"};
+		else return this->make_token(Token::SUB, "-");
 	}
 	// logic operators
-	if (c == '=') return Token{Token::EQ, "="};
+	if (c == '=') return this->make_token(Token::EQ, "=");
 	if (c == '<') {
 		c = peak_char();
-		if (c == '>') {pop_char(); return Token{Token::NE, "<>"};}
-		if (c == '=') {pop_char(); return Token{Token::LE, "<="};}
-		else return Token{Token::LT, "<"};
+		if (c == '>') {pop_char(); return this->make_token(Token::NE, "<>");}
+		if (c == '=') {pop_char(); return this->make_token(Token::LE, "<=");}
+		else return this->make_token(Token::LT, "<");
 	}
 	if (c == '>') {
 		c = peak_char();
-		if (c == '=') {pop_char(); return Token{Token::GE, ">="};}
-		else return Token{Token::GT, ">"};
+		if (c == '=') {pop_char(); return this->make_token(Token::GE, ">=");}
+		else return this->make_token(Token::GT, ">");
 	}
 	// type operators
-	if (c == '?') return Token{Token::OPT, "?"};
-	if (c == '^') return Token{Token::PTR, "^"};
-	if (c == '&') return Token{Token::REF, "&"};
+	if (c == '?') return this->make_token(Token::OPT, "?");
+	if (c == '^') return this->make_token(Token::PTR, "^");
+	if (c == '&') return this->make_token(Token::REF, "&");
 	// symbols
 	if (c == ':') {
-		if (peak_char() == '=') {pop_char(); return Token{Token::ASSIGN, ":="};}
-		else return Token{Token::COLON, ":"};
+		if (peak_char() == '=') {pop_char(); return this->make_token(Token::ASSIGN, ":=");}
+		else return this->make_token(Token::COLON, ":");
 	}
-	if (c == ';') return Token{Token::SEMICOLON, ";"};
-	if (c == ',') return Token{Token::COMMA, ","};
-	if (c == '.') return Token{Token::DOT, "."};
-	if (c == '|') return Token{Token::PIPE, "|"};
+	if (c == ';') return this->make_token(Token::SEMICOLON, ";");
+	if (c == ',') return this->make_token(Token::COMMA, ",");
+	if (c == '.') return this->make_token(Token::DOT, ".");
+	if (c == '|') return this->make_token(Token::PIPE, "|");
 	// whitespace
 	if (c == '\n') {
 		unsigned int count = 1;
@@ -205,15 +221,15 @@ Token Lexer::next_token() {
 		indent_diff = indent - line_indent;
 		line_indent = indent;
 		at_start_of_line = true;
-		return Token{Token::NL, std::string(count, '\n')};
+		return this->make_token(Token::NL, std::string(count, '\n'));
 	}
 	if (c == ' ') {
 		while (peak_char() == ' ') pop_char();
 		return next_token();
 	}
-	if (c == '\0') return Token{Token::ENDINPUT, "\0"};
+	if (c == '\0') return this->make_token(Token::ENDINPUT, "\0");
 
-	return Token{Token::ERROR, std::string(1, c)};
+	return this->make_token(Token::ERROR, std::string(1, c));
 }
 
 static const std::vector<std::pair<Token::Type, std::regex> > token_patterns = {
@@ -281,5 +297,10 @@ char Lexer::peak_char() {
 char Lexer::pop_char() {
 	char c = this->peak_char();
 	this->pos++;
+	this->column++;
+	if (c == '\n') {
+		this->column = 0;
+		this->line++;
+	}
 	return c;
 }
