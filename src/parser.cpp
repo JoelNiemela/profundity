@@ -85,7 +85,7 @@ LetStm* Parser::parse_let_stm() {
 		}
 	}
 
-	std::cerr << "Error: type must be known at compile time" << std::endl;
+	std::cerr << "Error at " << id.line << ":" << id.column << ": type must be known at compile time" << std::endl;
 	type_exp->print(std::cerr);
 	return nullptr;
 }
