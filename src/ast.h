@@ -52,6 +52,12 @@ struct ExpStm : Stm {
 	void print(std::ostream& out, int indent=0) const;
 };
 
+struct VoidStm : Stm {
+	VoidStm() {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
 struct UnitExp : Exp {
 	UnitExp() {}
 

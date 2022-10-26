@@ -48,7 +48,7 @@ Stm* Parser::parse_stm() {
 	}
 }
 
-LetStm* Parser::parse_let_stm() {
+Stm* Parser::parse_let_stm() {
 	lexer.assert_token(lexer.pop(), Token::Type::LET);
 
 	Token id = lexer.pop();
@@ -72,7 +72,11 @@ LetStm* Parser::parse_let_stm() {
 		ValueExp* value_exp;
 		if ((value_exp = dynamic_cast<ValueExp*>(exp))) {
 			symtable->insert(id.value, Symbol(type_value->value_type, value_exp->value));
-			return new LetStm(id.value, type_value->value_type, value_exp);
+			if (dynamic_cast<ComptimeType*>(type_value->value_type)) {
+				return new VoidStm();
+			} else {
+				return new LetStm(id.value, type_value->value_type, value_exp);
+			}
 		} else {
 			symtable->insert(id.value, Symbol(type_value->value_type));
 			return new LetStm(id.value, type_value->value_type, exp);
@@ -80,8 +84,18 @@ LetStm* Parser::parse_let_stm() {
 	} else {
 		Value* value = this->comptime_state->run_exp(type_exp);
 		if (TypeValue* type_value; (type_value = dynamic_cast<TypeValue*>(value))) {
-			symtable->insert(id.value, Symbol(type_value->value_type, type_value));
-			return new LetStm(id.value, type_value->value_type, exp);
+			ValueExp* value_exp;
+			if ((value_exp = dynamic_cast<ValueExp*>(exp))) {
+				symtable->insert(id.value, Symbol(type_value->value_type, value_exp->value));
+				if (dynamic_cast<ComptimeType*>(type_value->value_type)) {
+					return new VoidStm();
+				} else {
+					return new LetStm(id.value, type_value->value_type, value_exp);
+				}
+			} else {
+				symtable->insert(id.value, Symbol(type_value->value_type));
+				return new LetStm(id.value, type_value->value_type, exp);
+			}
 		}
 	}
 

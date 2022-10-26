@@ -33,6 +33,11 @@ void ExpStm::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "}\n";
 }
 
+void VoidStm::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "VoidStm {\n";
+	indented(out, indent) << "}\n";
+}
+
 void UnitExp::print(std::ostream& out, int indent) const {
 	indented(out, indent) << "UnitExp {\n";
 	indented(out, indent) << "}\n";
