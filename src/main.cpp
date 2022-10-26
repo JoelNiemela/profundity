@@ -8,7 +8,7 @@ int main() {
 	// Example string containing all tokens:
 	//Lexer lexer("let test_1 42\"Tesing \\\"strings\\\"\"()[]{}*/+-=<>< ><=>=->?^&:;.,|:=\n ");
 	
-	std::ifstream file("./example.prfn");
+	std::ifstream file("./test.prfn");
 	std::string source((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
 
 	Lexer lexer(source);
