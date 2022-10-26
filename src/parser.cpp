@@ -110,35 +110,48 @@ Exp* Parser::parse_exp(int prec) {
 	if (std::optional<Op> op; (op = Op::from_token(lexer.peak())) && op->prec() == prec && Op::unary(prec)) {
 		lexer.pop();
 		return new OpExp(nullptr, parse_exp(prec), *op);
-	} else { 
-		if (Op::assoc(prec) == Op::Assoc::LEFT) {
-			Exp* lexp = parse_exp(prec-1);
+	} else if (Op::list(prec)) {
+		Exp* exp = parse_exp(prec-1);
+
+		if (std::optional<Op> list_op; (list_op = Op::from_token(lexer.peak())) && list_op->prec() == prec) {
+			ExpList* exp_list = new ExpListHead(exp);
 
 			std::optional<Op> op;
-			while ((op = Op::from_token(lexer.peak())) && op->prec() == prec) {
+			while ((op = Op::from_token(lexer.peak())) && op->type == list_op->type && op->prec() == prec) {
 				lexer.pop();
-				Exp* rexp = parse_exp(prec-1);
-				lexp = new OpExp(lexp, rexp, *op);
+				Exp* exp = parse_exp(prec-1);
+				exp_list = new ExpListLink(exp_list, exp);
 			}
 
-			return lexp;
-		} else if (Op::assoc(prec) == Op::Assoc::RIGHT) {
-			Exp* lexp = parse_exp(prec-1);
-
-			std::optional<Op> op;
-			if ((op = Op::from_token(lexer.peak())) && op->prec() == prec) {
-				lexer.pop();
-				Exp* rexp = parse_exp(prec);
-				lexp = new OpExp(lexp, rexp, *op);
-			}
-
-			return lexp;
+			return new ListExp(exp_list, *list_op);
 		}
+
+		return exp;
+	} else if (Op::assoc(prec) == Op::Assoc::LEFT) {
+		Exp* lexp = parse_exp(prec-1);
+
+		std::optional<Op> op;
+		while ((op = Op::from_token(lexer.peak())) && op->prec() == prec) {
+			lexer.pop();
+			Exp* rexp = parse_exp(prec-1);
+			lexp = new OpExp(lexp, rexp, *op);
+		}
+
+		return lexp;
+	} else if (Op::assoc(prec) == Op::Assoc::RIGHT) {
+		Exp* lexp = parse_exp(prec-1);
+
+		std::optional<Op> op;
+		if ((op = Op::from_token(lexer.peak())) && op->prec() == prec) {
+			lexer.pop();
+			Exp* rexp = parse_exp(prec);
+			lexp = new OpExp(lexp, rexp, *op);
+		}
+
+		return lexp;
 	}
 
-	Token token = lexer.peak();
-	std::cerr << "Syntax Error (Exp) at " << token.line << ":" << token.column << ": Invalid operator" << std::endl;
-	return nullptr;
+	return parse_exp(prec-1);
 }
 
 Exp* Parser::parse_exp_atom() {

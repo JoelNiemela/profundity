@@ -82,3 +82,27 @@ void BlockExp::print(std::ostream& out, int indent) const {
 	}
 	indented(out, indent) << "}\n";
 }
+
+void ExpListHead::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "ExpListHead {\n";
+	if (this->exp) this->exp->print(out, indent+1);
+	else indented(out, indent+1) << "NULL\n";
+	indented(out, indent) << "}\n";
+}
+
+void ExpListLink::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "ExpListLink {\n";
+	if (this->exp_list) this->exp_list->print(out, indent+1);
+	else indented(out, indent+1) << "NULL\n";
+	if (this->exp) this->exp->print(out, indent+1);
+	else indented(out, indent+1) << "NULL\n";
+	indented(out, indent) << "}\n";
+}
+
+void ListExp::print(std::ostream& out, int indent) const {
+	indented(out, indent) << "ListExp {\n";
+	if (this->exp_list) this->exp_list->print(out, indent+1);
+	else indented(out, indent+1) << "NULL\n";
+	indented(out, indent+1) << to_string(this->separator.type) << "\n";
+	indented(out, indent) << "}\n";
+}

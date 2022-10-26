@@ -21,6 +21,7 @@ std::optional<Op> Op::from_token(Token token) {
 		case Token::Type::PTR:   return Op(Op::PTR);
 		case Token::Type::REF:   return Op(Op::REF);
 		case Token::Type::ARRAY: return Op(Op::ARRAY);
+		case Token::Type::COMMA: return Op(Op::COMMA);
 		default: return std::nullopt;
 	}
 }
@@ -39,12 +40,12 @@ Op::Assoc Op::assoc(int prec) {
 		case 11:
 		case 12:
 		case 13:
-		case 14:
 		case 15:
 			return Op::Assoc::LEFT;
 		case 1:
 		case 10:
 			return Op::Assoc::RIGHT;
+		case 14:
 		default:
 			return Op::Assoc::INVALID;
 	}
@@ -76,6 +77,32 @@ bool Op::unary(int prec) {
 	}
 }
 
+bool Op::list(int prec) {
+	switch (prec) {
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		case 10:
+		case 11:
+		case 12:
+		case 13:
+		case 15:
+			return false;
+		case 14:
+			return true;
+		default:
+			std::cerr << "Error: Unknown precedence level in ast.cpp:Op::list" << std::endl;
+			return false;
+	}
+}
+
 int Op::prec() {
 	switch (this->type) {
 		case Op::Type::MUL:   return 5;
@@ -84,15 +111,16 @@ int Op::prec() {
 		case Op::Type::SUB:   return 6;
 		case Op::Type::EQ:    return 15;
 		case Op::Type::NE:    return 15;
-		case Op::Type::LT:    return 14;
-		case Op::Type::GT:    return 14;
-		case Op::Type::LE:    return 14;
-		case Op::Type::GE:    return 14;
+		case Op::Type::LT:    return 13;
+		case Op::Type::GT:    return 13;
+		case Op::Type::LE:    return 13;
+		case Op::Type::GE:    return 13;
 		case Op::Type::ARROW: return 10;
 		case Op::Type::OPT:   return 1;
 		case Op::Type::PTR:   return 1;
 		case Op::Type::REF:   return 1;
-		case Op::Type::ARRAY:   return 1;
+		case Op::Type::ARRAY: return 1;
+		case Op::Type::COMMA: return 14;
 		default:
 			std::cerr << "Error: Unknown operator in ast.cpp:Op::prec" << std::endl;
 			return -1;
@@ -116,6 +144,7 @@ std::string to_string(Op::Type type) {
 		case Op::Type::PTR:   return "PTR";
 		case Op::Type::REF:   return "REF";
 		case Op::Type::ARRAY: return "ARRAY";
+		case Op::Type::COMMA: return "COMMA";
 		default:
 			std::cerr << "Error: Unknown operator in op.cpp:to_string" << std::endl;
 			return "UNKNOWN";

@@ -22,6 +22,7 @@ struct Op {
 		PTR,
 		REF,
 		ARRAY,
+		COMMA,
 	} type;
 
 	enum Assoc {
@@ -32,6 +33,7 @@ struct Op {
 
 	static Assoc assoc(int prec);
 	static bool unary(int prec);
+	static bool list(int prec);
 
 	int prec();
 

@@ -109,4 +109,32 @@ struct BlockExp : Exp {
 	void print(std::ostream& out, int indent=0) const;
 };
 
+struct ExpList : Node {};
+
+struct ExpListHead : ExpList {
+	Exp* exp;
+
+	ExpListHead(Exp* exp) : exp(exp) {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
+struct ExpListLink : ExpList {
+	ExpList* exp_list;
+	Exp* exp;
+
+	ExpListLink(ExpList* exp_list, Exp* exp) : exp_list(exp_list), exp(exp) {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
+struct ListExp : Exp {
+	ExpList* exp_list;
+	Op separator;
+
+	ListExp(ExpList* exp_list, Op separator) : exp_list(exp_list), separator(separator) {}
+
+	void print(std::ostream& out, int indent=0) const;
+};
+
 #endif
