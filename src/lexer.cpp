@@ -35,7 +35,7 @@ bool Lexer::assert_token(Token found, Token::Type expected) {
 
 bool Lexer::assert_token(Token found, std::set<Token::Type> expected) {
 	if (expected.empty()) {
-		std::cerr << "Error: found token " << to_string(found.type) << " in unreachable.";
+		std::cerr << "Error [" << found.line << ":" << found.column << "]: found token " << to_string(found.type) << " in unreachable.";
 		return false;
 	}
 
@@ -45,7 +45,7 @@ bool Lexer::assert_token(Token found, std::set<Token::Type> expected) {
 				return str + ", " + to_string(token);
 			}
 		);
-		std::cerr << "Error: expected " << expected_str << ", found " << to_string(found.type) << std::endl;
+		std::cerr << "Error [" << found.line << ":" << found.column << "]: expected " << expected_str << ", found " << to_string(found.type) << std::endl;
 		return false;
 	}
 

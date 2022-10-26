@@ -2,3 +2,8 @@ let i: type = i32
 
 let main: () -> () =
 	let y: type = ?i32
+
+let main: (a: i32) -> i32 =
+	a
+
+let for: []T -> (T -> T) -> []T = builtin
