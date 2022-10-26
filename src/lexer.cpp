@@ -176,7 +176,12 @@ Token Lexer::next_token() {
 	// arithmetic operators
 	if (c == '*') return this->make_token(Token::MUL, "*");
 	if (c == '/') return this->make_token(Token::DIV, "/");
-	if (c == '+') return this->make_token(Token::ADD, "+");
+	if (c == '+') {
+		// array operators
+		if (peak_char() == '+') {pop_char(); return this->make_token(Token::CONCAT, "++");}
+		// arithmetic operators
+		else return this->make_token(Token::ADD, "+");
+	}
 	if (c == '-') {
 		// type operators
 		if (peak_char() == '>') {pop_char(); return this->make_token(Token::ARROW, "->");}
@@ -253,6 +258,8 @@ static const std::vector<std::pair<Token::Type, std::regex> > token_patterns = {
 	{Token::Type::DIV,       std::regex("/")},
 	{Token::Type::ADD,       std::regex("\\+")},
 	{Token::Type::SUB,       std::regex("\\-")},
+	// array operators
+	{Token::Type::CONCAT,    std::regex("\\+\\+")},
 	// logic operators
 	{Token::Type::EQ,        std::regex("=")},
 	{Token::Type::NE,        std::regex("<>")},

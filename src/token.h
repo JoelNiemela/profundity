@@ -20,6 +20,8 @@ struct Token {
 		DIV,
 		ADD,
 		SUB,
+		// array operators
+		CONCAT,
 		// logic operators
 		EQ, NE,
 		LT, GT,

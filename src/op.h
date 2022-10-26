@@ -11,6 +11,7 @@ struct Op {
 		DIV,
 		ADD,
 		SUB,
+		CONCAT,
 		EQ,
 		NE,
 		LT,

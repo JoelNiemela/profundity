@@ -22,6 +22,8 @@ std::string to_string(Token::Type type) {
 		case Token::DIV:       return "DIV";
 		case Token::ADD:       return "ADD";
 		case Token::SUB:       return "SUB";
+		// array operators
+		case Token::CONCAT:    return "CONCAT";
 		// logic operators
 		case Token::EQ:        return "EQ";
 		case Token::NE:        return "NE";
